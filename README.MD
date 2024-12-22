@@ -2,7 +2,8 @@
 
 ## client to server communication protocol
 
-each communication must begin with the public key of the sender - 4096 bits
+
+each communication must begin with the public key of the sender - 512 bits
 
 then the communication must have the code for the contents of the rest of the message and the last 256 bits of the communication will be defined according to this value
 
@@ -11,7 +12,7 @@ then the communication must have the code for the contents of the rest of the me
 2 - block found, sent when a block is found, the last 256 bits of the communication will be the hash
 3 - initiate client, sent when this is the first time the client is trying to mine, the last 256 bits of the communication will be empty
 
-total length = 4096 + 2 + 256 = 4354
+total length = 4096 + 2 + 256 = 770
 
 ## server to client communication protocol
 
@@ -24,4 +25,9 @@ then the communication must have the code for the contents of the message, there
 2 - block found, bit after will be on if block found validated and off if block found is invalid
 3 - initiate client, bit after will be ignoredi
 
-total length = 4096 + 2 + 1 = 4099 
+total length = 4096 + 2 + 1 = 4099
+
+## database layout
+
+this is a very simple database, there is only one table
+work: public key (char()) - work done (int)
