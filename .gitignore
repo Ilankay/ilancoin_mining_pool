@@ -1,0 +1,8 @@
+server/work.db
+client/__pycache__/miner.cpython-312.pyc
+class CloseConn(Exception):
+    """ an exception to throw in order to close a client connection"""
+    pass
+server/__pycache__/db_api.cpython-312.pyc
+server/__pycache__/exceptions.cpython-312.pyc
+server/__pycache__/handle_client.cpython-312.pyc

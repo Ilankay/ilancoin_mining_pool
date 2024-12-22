@@ -1,10 +1,22 @@
 import socket 
+import random
+from miner import Miner
 
-if __name__ == "__main__":
-    HOST = "localhost"
-    PORT = 1234
+randbytes = lambda n:bytes(map(random.getrandbits,(8,)*n))
+
+def send_data(operation_code):
+    pkey = randbytes(65)
+    hash = randbytes(32)
+    msg = pkey+bytes(operation_code.to_bytes(1,"little"))+hash
+    print(len(msg))
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
-        s.sendall(b'Hello, world')
-        data = s.recv(1024)
-    print(data.decode('utf-8'))
+        s.sendall(msg)
+        
+
+if __name__ == "__main__":
+
+    HOST = "localhost"
+    PORT = 1234
+    
+    send_data(3)
