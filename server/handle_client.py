@@ -28,9 +28,9 @@ class HandleClient:
         self.db = db
         data = None
         while True:
-            print("test")
-            data = conn.recv(VALID_SIZE*8)
-            if not data: break
+            temp = conn.recv(VALID_SIZE*8)
+            if not temp: break
+            data = temp
         if not self.validate_data(data): 
             print("data is invalid")
             raise CloseConn
