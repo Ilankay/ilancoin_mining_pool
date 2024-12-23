@@ -3,10 +3,13 @@ from exceptions import CloseConn
 #gloabl constants
 VALID_SIZE = 98
 PKEY_LEN = 65 #length of public key in bytes
-
+VALID_SEND_SIZE = 67
 
 class HandleClient:
 
+    def create_msg(self):
+        """this method creates a valid message to send to the client"""
+        
     def add_client(self):
         print("client added")
         pass

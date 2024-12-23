@@ -15,7 +15,7 @@ total length = 65+1+32 = 98
 
 ## server to client communication protocol
 
-each communication must begin with the public key of the client - 520 bits, 65
+each communication must begin with the public key of the server walllet - 520 bits, 65
 
 then the communication must have the code (1 byte) for the contents of the message, there is an aditional byte after this that is defined by the contents of the code
 
@@ -30,3 +30,17 @@ total length = 65 +1 +1 = 67
 
 this is a very simple database, there is only one table
 work: public key (char()) - work done (int)
+
+## todo
+
+### server:
+- write add_client method 
+- write add_work method (with actual validation)
+- write block found method (with actual validation)
+- write a method to formulate a response to the client
+- add stdio interface with admin that allowes interactions with db
+
+### client:
+- get the miner class to return every set amount of time a number with the correct size and a weighted random amount of zeros
+- multithread the miner
+- add an stdio interface for the client to interact with the admin
