@@ -1,5 +1,7 @@
-from exceptions import CloseConn
+from exceptions import CloseConn,ClientExists
+from db_api import DbApi
 
+import random
 #gloabl constants
 VALID_SIZE = 98
 PKEY_LEN = 65 #length of public key in bytes
@@ -7,12 +9,25 @@ VALID_SEND_SIZE = 67
 
 class HandleClient:
 
-    def create_msg(self):
+    def create_msg(self,code:int,content:int):
         """this method creates a valid message to send to the client"""
-        
+        randbytes = lambda n:bytes(map(random.getrandbits,(8,)*n))
+        server_pkey = randbytes(PKEY_LEN) #replace with server public key
+        code = code.to_bytes(1,"little")
+        content = content.to_bytes(1,"little")
+        return server_pkey+code+content
+    
     def add_client(self):
-        print("client added")
-        pass
+        """ this method will add a new client to the database"""
+        try:
+            self.db.add_client(self.pub_key)
+            msg = self.create_msg(3,1)
+            self.conn.sendall(msg)
+            print("client added")
+        except ClientExists:
+            msg = self.create_msg(3,0)
+            print("client already exists")
+            self.conn.sendall(msg)
 
     def add_work(self):
         print("work is added")
@@ -27,7 +42,7 @@ class HandleClient:
             return True 
         return False
 
-    def __init__(self, conn, addr, db):
+    def __init__(self, conn, addr, db:DbApi):
         self.db = db
         data = None
         while True:
@@ -41,7 +56,7 @@ class HandleClient:
         self.pub_key = data[:PKEY_LEN]
         self.operation_code = data[PKEY_LEN]
         self.hash = data[PKEY_LEN:]
-
+        self.conn = conn
         #should be moved into seperate method
         match(self.operation_code):
             case 0: return

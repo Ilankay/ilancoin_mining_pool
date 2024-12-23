@@ -12,7 +12,6 @@ def send_data(operation_code):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
         s.sendall(msg)
-        
 
 if __name__ == "__main__":
 
