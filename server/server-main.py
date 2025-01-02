@@ -7,7 +7,7 @@ from exceptions import CloseConn
 
 #gloabl constants
 VALID_SIZE = 98
-PKEY_LEN = 65 #length of public key in bytes
+WADDR_LEN = 65 #length of wallet address in bytes
 
 class ClThread(threading.Thread):
     def __init__(self, conn, addr, db):

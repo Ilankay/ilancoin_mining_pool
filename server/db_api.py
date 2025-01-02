@@ -8,18 +8,18 @@ class DbApi:
             query = "SELECT name FROM sqlite_master WHERE type='table' AND name='work';"
             content = cur.execute(query).fetchall()
             if ("work",) not in content:
-                query = "CREATE TABLE work (id INTEGER PRIMARY KEY, pkey BLOB, work INTEGER);"
+                query = "CREATE TABLE work (id INTEGER PRIMARY KEY, waddr BLOB, work INTEGER);"
                 cur.execute(query)
             conn.commit()
 
-    def add_client(self,pkey):
-        query = "SELECT * FROM work WHERE pkey = ?;"
+    def add_client(self,waddr):
+        query = "SELECT * FROM work WHERE waddr = ?;"
         with sqlite3.connect(self.db_path) as conn:
             cur = conn.cursor()
-            cur.execute(query,pkey)
+            cur.execute(query,waddr)
             if len(cur.fetchall()) != 0: raise ClientExists
-            query = "INSERT INTO work (pkey, work) VALUES (?,0)"
-            cur.execute(query,pkey)
+            query = "INSERT INTO work (waddr, work) VALUES (?,0)"
+            cur.execute(query,waddr)
             conn.commit()
             return
  
