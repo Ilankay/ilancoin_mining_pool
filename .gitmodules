@@ -1,0 +1,3 @@
+[submodule "client/bitpyminer"]
+	path = client/bitpyminer
+	url = https://github.com/Ilankay/python-bitcoin-solo-miner.git
