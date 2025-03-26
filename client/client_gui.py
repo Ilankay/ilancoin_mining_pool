@@ -189,6 +189,7 @@ def on_closing():
     global param_q
     param_q.put(json.dumps({}))
     run.clear()
+    print("goodbye")
     root.destroy()
 root.protocol("WM_DELETE_WINDOW",on_closing)
 root.mainloop()

@@ -1,3 +1,4 @@
+from exceptions import InvalidResponse,ExitProgram
 import socket
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import AES, PKCS1_OAEP
@@ -14,17 +15,20 @@ def crc32_checksum(data: bytes) -> bytes:
     checksum = zlib.crc32(data) & 0xFFFFFFFF  # Ensure unsigned 32-bit integer
     return checksum.to_bytes(4, 'big')  # Convert to 4-byte bytes object
 
-class InvalidResponse(Exception):
-    pass
-
 class EncryptedSocket:
     def __init__(self,port,address):
         self.sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.sock.settimeout(5)
+
         self.port = port
         self.address = address
         self.rsakey = None
         self.iv = None
-        self.sock.connect((self.address,self.port))
+        try:
+            self.sock.connect((self.address,self.port))
+        except ConnectionError:
+            self.sock.shutdown(socket.SHUT_RDWR)
+            raise ExitProgram
 
         self.rsakey = RSA.generate(PK_SIZE)
 
@@ -57,15 +61,19 @@ class EncryptedSocket:
         checksum = crc32_checksum(msg)
         self.sock.sendall(length+operation+checksum+msg)
         # recieve response
-        header = self.sock.recv(9)
-        msg_len = struct.unpack("!I",header[:4])[0]
-        msg_op = header[4]
-        msg_checksum = header[5:]
-        msg = self.sock.recv(msg_len)
-        if crc32_checksum(msg) != msg_checksum:
-            raise InvalidResponse
-        iv_recv = msg[:16]
-        aes_cipher = AES.new(self.aes_key,AES.MODE_CBC,iv=iv_recv)
+        try:
+            header = self.sock.recv(9)
+            msg_len = struct.unpack("!I",header[:4])[0]
+            msg_op = header[4]
+            msg_checksum = header[5:]
+            msg = self.sock.recv(msg_len)
+            if crc32_checksum(msg) != msg_checksum:
+                raise InvalidResponse
+            iv_recv = msg[:16]
+            aes_cipher = AES.new(self.aes_key,AES.MODE_CBC,iv=iv_recv)
+        except TimeoutError:
+            self.sock.shutdown(socket.SHUT_RDWR)
+            raise ExitProgram
 
         return (msg_op,unpad(aes_cipher.decrypt(msg[16:]),16))
 

@@ -1,4 +1,5 @@
 from encrypted_socket import EncryptedSocket
+from exceptions import ExitProgram
 import json
 PORT = 1234
 ADDR = "localhost"
@@ -20,22 +21,26 @@ class ServerConn:
         params = self.es.send_message(ilc_address.encode(),0)[1]
         return json.loads(params.decode())
 
-    def submit_work(self,ilc_address,block_header):
+    def submit_work(self,ilc_address,block_header)->dict:
         return_op,return_val = self.es.send_message(ilc_address.encode()+block_header,1)
-        if return_op:
+        if return_op == 1:
             print("work submitted succsessfully")
-            return True
+            return json.loads(return_val)
+        elif return_op == 4:
+            raise ExitProgram
         else:
             print(f"error: {return_val}")
-            return False
+            return {}
         
     def submit_block(self,ilc_address,block):
         return_op,return_val = self.es.send_message(ilc_address.encode()+block,2)
-        if return_op:
-            print("work submitted succsessfully")
-            return True
+        if return_op == 1:
+            print("block submitted succsessfully")
+            return json.loads(return_val)
+        elif return_op == 4:
+            raise ExitProgram
         else:
             print(f"error: {return_val}")
-            return False
-        
+            return {}
+               
  
