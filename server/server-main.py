@@ -54,7 +54,7 @@ def init_server(host, port, db_path):
 
 
 if __name__ == "__main__":
-    db_path = "server/work.db"
+    db_path = "work.db"
     HOST = "localhost"
     PORT = 1234
     init_server(HOST,PORT,db_path)
