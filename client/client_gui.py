@@ -80,15 +80,20 @@ def start_mining(ilc_address,cores,log,reward_val,run,param_q):
     log.see(tk.END)
 
     can_start.set()
-    time.sleep(1)
 
     while run.is_set():
         can_start.clear()
         new_params = param_q.get()
+        reward = get_reward(ilc_address,json.loads(new_params["output_div"]))
+        print(reward)
+        reward_val.set(f"Current reward: {reward}")
+
         if not run.is_set(): break
         for p in processes:
             p.terminate()
             p.join()
+        log_entry = f"Log entry: mining stopped\n"
+        log.insert(tk.END,log_entry)
         processes = []
         for i in range(cores):
             p = Process(target=mine_process,args=(new_params,send_q,can_start,i))
@@ -96,11 +101,10 @@ def start_mining(ilc_address,cores,log,reward_val,run,param_q):
             time.sleep(1.5)
             processes.append(p)
         print("miners active")
-        log_entry = f"Log entry: miners active"
+        log_entry = f"Log entry: miners active\n"
         log.insert(tk.END,log_entry)
         log.see(tk.END)
         can_start.set()
-        new_params = param_q.get()
 
     for p in processes:
         p.terminate()
@@ -114,7 +118,6 @@ def start_logging():
     """Starts the logging process in a background thread."""
     address = address_entry.get()
     cores = core_slider.get()
-    log_box.insert(tk.END, f"Starting process with address: {address} and {cores} cores\n")
     log_box.see(tk.END)  # Auto-scroll to latest log
     
     try:
@@ -150,7 +153,7 @@ def show_start_screen():
 
 # GUI Setup
 root = tk.Tk()
-root.title("CPU Logger GUI")
+root.title("ilancoin mining pool")
 root.geometry("400x300")
 
 run  = Event()

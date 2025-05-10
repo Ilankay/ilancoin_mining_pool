@@ -41,7 +41,7 @@ class HandleClient:
         for addr, work in array_work:
             sum += work
         for index,i in enumerate(array_work):
-            array_work[index][1] = f"{(int(i[1]/sum) * amnt):016x}"
+            array_work[index][1] = f"{int(i[1]/sum * amnt):016x}"
         return array_work
     
     def get_mining_params(self):
