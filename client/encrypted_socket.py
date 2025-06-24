@@ -6,6 +6,7 @@ from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
 import struct
 import zlib
+import os
 
 PK_SIZE = 2048
 BUFF_SIZE = 1024
@@ -22,7 +23,6 @@ class EncryptedSocket:
 
         self.port = port
         self.address = address
-        self.rsakey = None
         self.iv = None
         try:
             self.sock.connect((self.address,self.port))
@@ -30,24 +30,18 @@ class EncryptedSocket:
             self.sock.shutdown(socket.SHUT_RDWR)
             raise ExitProgram
 
-        self.rsakey = RSA.generate(PK_SIZE)
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(script_dir,"enc_rsa_publickey")
+        with open(file_path,'r') as keyfile:
+            enc_rsa = RSA.import_key(keyfile.read())
+        rsa_cipher = PKCS1_OAEP.new(enc_rsa)
 
-        pub_key = self.rsakey.public_key().export_key()
-        length = struct.pack("!I",len(pub_key))
-        operation = struct.pack("!B",3)
-        checksum = crc32_checksum(pub_key)
-        self.sock.sendall(length+operation+checksum+pub_key)
-
-        header = self.sock.recv(9)
-        msg_len = struct.unpack("!I",header[:4])[0]
-        msg_op = header[4]
-        msg_checksum = header[5:]
-        msg = self.sock.recv(msg_len)
-        if crc32_checksum(msg) != msg_checksum or msg_op != 3:
-            raise InvalidResponse
-
-        rsa_cipher = PKCS1_OAEP.new(self.rsakey)
-        self.aes_key = rsa_cipher.decrypt(msg)
+        self.aes_key = get_random_bytes(16)
+        enc_msg = rsa_cipher.encrypt(self.aes_key)
+        length = struct.pack("!i",len(enc_msg))
+        operation = struct.pack("!b",3)
+        checksum = crc32_checksum(enc_msg)
+        self.sock.sendall(length+operation+checksum+enc_msg)
 
     def send_message(self,data, operation):
         iv = get_random_bytes(16)

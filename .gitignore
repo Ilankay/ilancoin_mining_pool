@@ -1,3 +1,4 @@
 server/work.db
 client/__pycache__/*
 server/__pycache__/*
+server/enc_rsa_privatekey
