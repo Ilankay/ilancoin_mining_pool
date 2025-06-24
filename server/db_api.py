@@ -1,6 +1,6 @@
 import sqlite3
 from exceptions import ClientExists
-
+from bech32 import bech32_decode
 
 class DbApi:
     def __init__(self, db_path:str):
@@ -16,6 +16,7 @@ class DbApi:
             conn.commit()
 
     def add_client(self,waddr):
+        waddr = bech32_decode(waddr)
         query = "SELECT * FROM work WHERE waddr = ?;"
         with sqlite3.connect(self.db_path) as conn:
             cur = conn.cursor()
@@ -34,6 +35,7 @@ class DbApi:
             return cur.fetchall()[0][0]
 
     def add_work(self,waddr):
+        waddr = bech32_decode(waddr)
         query = "UPDATE work SET work = work + 1 WHERE waddr = ?;"
         with sqlite3.connect(self.db_path) as conn:
             cur = conn.cursor()

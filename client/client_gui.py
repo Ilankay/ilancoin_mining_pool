@@ -121,7 +121,7 @@ def start_logging():
     log_box.see(tk.END)  # Auto-scroll to latest log
     
     try:
-        hex_addr = bech32_decode(address)
+        bech32_decode(address)
     except InvalidAddr:
         log_box.insert(tk.END, "❌ Invalid address! Please enter a valid BTC address.\n")
         log_box.see(tk.END)
@@ -136,7 +136,7 @@ def start_logging():
     global run
     global param_q
     run.set()
-    thread = threading.Thread(target=start_mining, daemon=True,args=(hex_addr,cores,log_box,reward_value,run,param_q))
+    thread = threading.Thread(target=start_mining, daemon=True,args=(address,cores,log_box,reward_value,run,param_q))
     thread.start()
 
 def show_log_screen():

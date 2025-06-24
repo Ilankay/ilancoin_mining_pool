@@ -1,11 +1,11 @@
-import enum
-from exceptions import CloseConn,ClientExists
+from exceptions import CloseConn,ClientExists,InvalidAddr
 from encrypted_socket import EncryptedSocket
 from db_api import DbApi
 from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
 import json
 from bitpyminer import BlockHeader,Output,CoinbaseTransaction
 import struct
+from bech32 import bech32_decode
 
 def encode_compactsize(i):
     if i <= 252:
@@ -63,6 +63,9 @@ class HandleClient:
             self.db.add_client(waddr)
         except ClientExists:
             pass
+        except InvalidAddr:
+            self.es.send_message('Invalid Address',0)
+            return
 
         params = self.get_mining_params()
         self.params = params
@@ -100,6 +103,10 @@ class HandleClient:
                 self.db.add_client(waddr)
             except ClientExists:
                 pass
+            except InvalidAddr:
+                self.es.send_message('Invalid Address',0)
+                return
+
             self.db.add_work(waddr)
             self.params = self.get_mining_params()
             self.es.send_message(json.dumps(self.params).encode(),1)
@@ -119,6 +126,10 @@ class HandleClient:
                 self.db.add_client(waddr)
             except ClientExists:
                 pass
+            except InvalidAddr:
+                self.es.send_message('Invalid Address',0)
+                return
+
             self.db.add_work(waddr)
             self.params = self.get_mining_params()
             self.es.send_message(json.dumps(self.params).encode(),1)

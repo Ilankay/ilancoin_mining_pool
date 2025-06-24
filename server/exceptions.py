@@ -5,3 +5,7 @@ class CloseConn(Exception):
 class ClientExists(Exception):
     """ an exception to throw when a client already exists when trying to add it"""
     pass
+
+class InvalidAddr(Exception):
+    pass
+
