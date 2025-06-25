@@ -1,5 +1,12 @@
 # CS project - altcoin (ilancoin) mining pool
 
+## setup instructinos:
+### server:
+run the server-main.py file in the server directory
+
+### client:
+run the client_gui.py file in the client directory
+
 ## client to server communication protocol
 
 the communication from the client to the server will begin with a header that will include
@@ -56,16 +63,4 @@ this is a very simple database, there is only one table
 
 work: public key hash (char()) - work done (int)
 
-## todo
 
-### server:
-- write add_client method 
-- write add_work method (with actual validation)
-- write block found method (with actual validation)
-- write a method to formulate a response to the client
-- add stdio interface with admin that allowes interactions with db
-
-### client:
-- get the miner class to return every set amount of time a number with the correct size and a weighted random amount of zeros
-- multithread the miner
-- add an stdio interface for the client to interact with the admin

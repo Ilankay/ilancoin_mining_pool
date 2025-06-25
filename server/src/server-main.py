@@ -1,6 +1,6 @@
 import socket 
 import threading
-
+import os
 from db_api import DbApi
 from handle_client import HandleClient
 from exceptions import CloseConn
@@ -54,7 +54,8 @@ def init_server(host, port, db_path):
 
 
 if __name__ == "__main__":
-    db_path = "work.db"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    db_path = os.path.join(script_dir,"../other","work.db")
     HOST = "localhost"
     PORT = 1234
     init_server(HOST,PORT,db_path)

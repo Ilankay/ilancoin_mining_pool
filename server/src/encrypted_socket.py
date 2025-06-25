@@ -40,7 +40,7 @@ class EncryptedSocket:
         self.iv = None
         
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(script_dir,"enc_rsa_privatekey")
+        file_path = os.path.join(script_dir,"../other","enc_rsa_privatekey")
         with open(file_path,"r") as f:  
             enc_rsa = RSA.import_key(f.read())
         rsa_cipher = PKCS1_OAEP.new(enc_rsa)

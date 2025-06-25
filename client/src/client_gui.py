@@ -54,7 +54,7 @@ def mine_process(mining_params,send_q,can_start,offset):
 
 def get_reward(ilc_address,output_div):
     for addr,amnt in output_div:
-        if ilc_address == addr:
+        if bech32_decode(ilc_address) == addr:
             return int(amnt,16)/100_000_000
 
 def start_mining(ilc_address,cores,log,reward_val,run,param_q):

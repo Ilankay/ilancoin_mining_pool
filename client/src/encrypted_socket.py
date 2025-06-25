@@ -31,7 +31,7 @@ class EncryptedSocket:
             raise ExitProgram
 
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(script_dir,"enc_rsa_publickey")
+        file_path = os.path.join(script_dir,"../other","enc_rsa_publickey")
         with open(file_path,'r') as keyfile:
             enc_rsa = RSA.import_key(keyfile.read())
         rsa_cipher = PKCS1_OAEP.new(enc_rsa)
