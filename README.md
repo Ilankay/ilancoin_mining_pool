@@ -2,10 +2,15 @@
 
 ## setup instructinos:
 ### server:
-run the server-main.py file in the server directory
+install the required packages from other/requirements.txt
+configure the database and the rpc in the server-main.py file
+
+run the src/server-main.py file 
 
 ### client:
-run the client_gui.py file in the client directory
+install the required packages from other/requirements.txt
+
+run the other/client_gui.py file in the client directory
 
 ## client to server communication protocol
 
